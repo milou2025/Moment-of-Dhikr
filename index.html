@@ -3,62 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+    <title>Moment of Dhikr</title>
+    <style>
+      .prayer-container {
+        display: flex; justify-content: space-around; flex-wrap: wrap;
+        gap: 10px; padding: 15px; background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 20px auto; max-width: 800px; direction: rtl;
+      }
+      .prayer-card { text-align: center; color: white; font-family: sans-serif; }
+      .prayer-card h4 { color: #ffcc00; margin: 5px 0; font-size: 0.8rem; }
+      .prayer-time { font-weight: bold; font-size: 1rem; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-<div id="islamic-section" style="text-align: center; padding: 20px; font-family: sans-serif; direction: rtl; background: #1a1a1a; color: white; border-radius: 15px; margin: 20px;">
-    
-    <h3>🕋 أوقات الصلاة (الجزائر)</h3>
-    <div id="prayer-times" style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-bottom: 20px;">
-        جاري التحميل...
-    </div>
 
-    <hr style="border: 0.5px solid #444;">
+    <div class="prayer-container" id="prayer-times-styled"></div>
 
-    <h3>📖 آية اليوم</h3>
-    <p id="ayah-text" style="font-style: italic; font-size: 1.2rem;">جاري جلب الآية...</p>
-    <audio id="ayah-audio" controls style="width: 100%; max-width: 300px;"></audio>
-
-    <hr style="border: 0.5px solid #444;">
-
-    <h3>📜 حديث نبوي</h3>
-    <p id="hadith-text">جاري جلب الحديث...</p>
-</div>
-<script>
-    // 1. جلب أوقات الصلاة
-    fetch('https://api.aladhan.com/v1/timingsByCity?city=Algiers&country=Algeria&method=3')
-    .then(res => res.json())
-    .then(data => {
+    <script>
+      // جلب أوقات الصلاة
+      fetch('https://api.aladhan.com/v1/timingsByCity?city=Algiers&country=Algeria&method=3')
+      .then(res => res.json()).then(data => {
         const t = data.data.timings;
-        document.getElementById('prayer-times').innerHTML = `
-            <span>الفجر: ${t.Fajr}</span> | 
-            <span>الظهر: ${t.Dhuhr}</span> | 
-            <span>العصر: ${t.Asr}</span> | 
-            <span>المغرب: ${t.Maghrib}</span> | 
-            <span>العشاء: ${t.Isha}</span>
-        `;
-    });
+        const prayers = [
+          {n: 'الفجر', v: t.Fajr}, {n: 'الظهر', v: t.Dhuhr}, 
+          {n: 'العصر', v: t.Asr}, {n: 'المغرب', v: t.Maghrib}, {n: 'العشاء', v: t.Isha}
+        ];
+        document.getElementById('prayer-times-styled').innerHTML = prayers.map(p => `
+          <div class="prayer-card">
+            <h4>${p.n}</h4>
+            <div class="prayer-time">${p.v}</div>
+          </div>
+        `).join('');
+      });
 
-    // 2. جلب آية عشوائية مع الصوت
-    fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy')
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('ayah-text').innerText = data.data.text;
-        document.getElementById('ayah-audio').src = data.data.audio;
-    });
-
-    // 3. جلب حديث عشوائي (من الأربعين النووية كمثال)
-    fetch('https://hadis-api-id.vercel.app/hadith/arbain')
-    .then(res => res.json())
-    .then(data => {
-        // نختار حديث عشوائي من القائمة
-        const randomIndex = Math.floor(Math.random() * data.data.length);
-        const randomHadith = data.data[randomIndex];
-        document.getElementById('hadith-text').innerText = randomHadith.arab;
-    });
-</script>
-</body>
+      // ربط الصوت بالزر الأحمر اللي في الموقع
+      fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy')
+      .then(res => res.json()).then(data => {
+        const audioObj = new Audio(data.data.audio);
+        document.addEventListener('click', function(e) {
+          // إذا ضغطت على زر التشغيل الأصفر
+          if (e.target.closest('button')) {
+            if (audioObj.paused) audioObj.play();
+            else audioObj.pause();
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
