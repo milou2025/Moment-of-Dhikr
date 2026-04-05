@@ -5,85 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Moment of Dhikr</title>
     <style>
-      /* تنسيق قسم أوقات الصلاة الجديد */
-      #prayer-section {
-        display: none; /* مخفي في البداية */
-        padding: 20px; background: #000; color: white;
-        text-align: center; font-family: sans-serif; direction: rtl;
+      /* تنسيق الهيدر لأوقات الصلاة */
+      #p-header {
+        display: flex; justify-content: space-around; background: #000;
+        padding: 10px; border-bottom: 1px solid #ffcc00; color: #fff;
+        font-family: sans-serif; font-size: 0.7rem; direction: rtl;
       }
-      .prayer-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 10px; margin-top: 15px;
+      .p-time { color: #ffcc00; font-weight: bold; }
+      
+      /* تنسيق الخانة الجديدة (Card) */
+      .p-card-trigger {
+        background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+        border-radius: 12px; padding: 15px; margin: 15px; display: flex;
+        align-items: center; cursor: pointer; direction: rtl;
       }
-      .p-card { background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 10px; border: 1px solid #ffcc00; }
-      .p-card div { color: #ffcc00; font-weight: bold; }
-
-      /* تنسيق الخانة الجديدة (الزر) */
-      .custom-prayer-card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 15px; padding: 15px; margin: 10px;
-        display: flex; align-items: center; cursor: pointer;
-        transition: 0.3s;
-      }
-      .custom-prayer-card:hover { background: rgba(255, 255, 255, 0.1); }
-      .icon-circle { width: 40px; height: 40px; background: #2ecc71; border-radius: 10px; margin-left: 15px; display: flex; align-items: center; justify-content: center; }
     </style>
   </head>
   <body>
+    <div id="p-header">جاري تحميل الأوقات...</div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <div id="prayer-section">
-      <h3 id="location-name">أوقات الصلاة</h3>
-      <div class="prayer-grid" id="prayers"></div>
-    </div>
-
     <script>
-      // 1. وظيفة لجلب الأوقات بناءً على الموقع الجغرافي
-      function getPrayerTimes(lat, lon) {
+      // 1. جلب الموقع والأوقات
+      function loadPrayers(lat, lon) {
         fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`)
-          .then(res => res.json())
-          .then(data => {
-            const t = data.data.timings;
-            const prayers = [
-              {n:'الفجر', v:t.Fajr}, {n:'الظهر', v:t.Dhuhr}, 
-              {n:'العصر', v:t.Asr}, {n:'المغرب', v:t.Maghrib}, {n:'العشاء', v:t.Isha}
-            ];
-            document.getElementById('prayers').innerHTML = prayers.map(p => `
-              <div class="p-card"><h4>${p.n}</h4><div>${p.v}</div></div>
-            `).join('');
-            document.getElementById('prayer-section').style.display = 'block';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          .then(res => res.json()).then(d => {
+            const t = d.data.timings;
+            document.getElementById('p-header').innerHTML = `
+              <div>الفجر <span class="p-time">${t.Fajr}</span></div>
+              <div>الظهر <span class="p-time">${t.Dhuhr}</span></div>
+              <div>العصر <span class="p-time">${t.Asr}</span></div>
+              <div>المغرب <span class="p-time">${t.Maghrib}</span></div>
+              <div>العشاء <span class="p-time">${t.Isha}</span></div>
+            `;
           });
       }
 
-      // 2. طلب إذن الموقع الجغرافي عند الضغط
-      function requestLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => getPrayerTimes(pos.coords.latitude, pos.coords.longitude),
-            () => alert("يرجى تفعيل الموقع الجغرافي لرؤية الأوقات الخاصة بمدينتك")
-          );
-        }
+      // طلب الموقع تلقائياً
+      navigator.geolocation.getCurrentPosition(p => loadPrayers(p.coords.latitude, p.coords.longitude));
+
+      // 2. تحديث الآية والصوت المتطابق
+      async function setupQuran() {
+        const res = await fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy');
+        const data = await res.json();
+        const audio = new Audio(data.data.audio);
+
+        // انتظر ظهور العناصر في الشاشة
+        const interval = setInterval(() => {
+          const allPs = document.querySelectorAll('p');
+          allPs.forEach(p => {
+            if (p.innerText.includes("فَاذْكُرُونِي") || p.innerText.length > 20) {
+              p.innerText = data.data.text; // تغيير النص
+              clearInterval(interval);
+            }
+          });
+
+          // ربط الزر بالصوت
+          const btn = document.querySelector('button');
+          if (btn) {
+            btn.onclick = () => audio.play();
+          }
+        }, 1000);
       }
 
-      // 3. زر ذكي يضيف نفسه داخل تصميم الموقع (React)
+      setupQuran();
+
+      // 3. إضافة خانة "أوقات الصلاة" وسط الصفحة
       setTimeout(() => {
-        const targetDiv = document.querySelector('.grid') || document.body; // يحاول يلقى الـ Grid الأصلي
-        const prayerCard = document.createElement('div');
-        prayerCard.className = 'custom-prayer-card';
-        prayerCard.innerHTML = `
-          <div class="icon-circle">🕌</div>
-          <div style="text-align: right; flex-grow: 1;">
-            <div style="color: white; font-weight: bold;">أوقات الصلاة</div>
-            <div style="color: #aaa; font-size: 0.8rem;">حسب موقعك الحالي</div>
-          </div>
-        `;
-        prayerCard.onclick = requestLocation;
-        
-        // إضافة الكرت في بداية الصفحة أو مكان معين
-        document.getElementById('root').prepend(prayerCard);
+        const card = document.createElement('div');
+        card.className = 'p-card-trigger';
+        card.innerHTML = `<div style="background:#2ecc71; padding:10px; border-radius:8px; margin-left:15px;">🕌</div> 
+                          <div style="color:#fff; text-align:right;"><b>أوقات الصلاة</b><br><small style="color:#aaa;">تحديث تلقائي حسب موقعك</small></div>`;
+        document.getElementById('root').prepend(card);
       }, 3000);
     </script>
   </body>
