@@ -3,151 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ذكر وقرآن - النسخة الصوتية الكاملة</title>
+    <title>نور | NUR - ذكر وقرآن</title>
     <style>
-        :root { --gold: #ffd700; --bg: #1a1a1a; --card: #2a2a2a; }
-        body { margin:0; font-family:'Segoe UI', Tahoma, sans-serif; background:var(--bg); color:#f5f5f5; line-height:1.6; padding-bottom:50px;}
-        h1, h2 { text-align:center; color:var(--gold); margin:20px 0; }
-        section { padding:15px; max-width:800px; margin:auto; }
-        .card { background:var(--card); border-radius:15px; padding:20px; margin-bottom:15px; border:1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
-        .play-btn { background:var(--gold); color:#1a1a1a; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:bold; transition:0.3s; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .play-btn:hover { background:#e6c200; transform: translateY(-2px); }
-        #times { display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:10px; text-align:center; }
-        .time-box { background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; border:1px solid var(--gold); }
-        .quran-frame { width:100%; height:550px; border:none; border-radius:12px; background: white; }
-        .audio-icon { font-size: 1.2rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --accent-gold: #c5a059;
+            --card-bg: #0c0c0c;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
+            --border-color: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* الهيدر العلوي */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Amiri', serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* القسم الرئيسي (Hero Section) */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero span {
+            color: var(--accent-gold);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid var(--accent-gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent-gold);
+        }
+
+        .hero p {
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: black;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+        }
+
+        /* قسم آية اليوم */
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-gray);
+            margin: 40px 5% 20px;
+            font-size: 14px;
+        }
+
+        .verse-card {
+            background: var(--card-bg);
+            margin: 0 5%;
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .verse-arabic {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .verse-translation {
+            color: var(--text-gray);
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .verse-ref {
+            color: var(--accent-gold);
+            font-size: 12px;
+        }
+
+        /* قسم الأذكار - شبكة المربعات */
+        .dhikr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0 5%;
+            margin-bottom: 50px;
+        }
+
+        .dhikr-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .dhikr-item:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .dhikr-item h3 {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .dhikr-sub {
+            color: var(--accent-gold);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .dhikr-trans {
+            color: var(--text-gray);
+            font-size: 11px;
+        }
+
+        /* قسم الاشتراك */
+        .subscribe-box {
+            background: var(--card-bg);
+            margin: 50px 5%;
+            padding: 60px;
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .subscribe-box input {
+            background: #000;
+            border: 1px solid var(--border-color);
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            width: 300px;
+            margin-left: 10px;
+        }
+
+        /* فوتر */
+        footer {
+            padding: 50px 5%;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-gray);
+            font-size: 13px;
+        }
+
+        .prayer-times-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: #0c0c0c;
+            padding: 10px;
+            font-size: 12px;
+            border-radius: 10px;
+            margin: 20px 5%;
+        }
+        
+        .time-item span { color: var(--accent-gold); margin-right: 5px; }
+
     </style>
 </head>
 <body>
 
-<header style="text-align:center; padding:40px 10px;">
-    <h1>ذكر يومي وقرآن</h1>
-    <p style="opacity: 0.8;">استمع للذكر والقرآن يومياً</p>
-</header>
+    <nav>
+        <div class="logo">🌙 NUR</div>
+        <div style="display:flex; gap:20px; font-size:14px; color:var(--text-gray);">
+            <span>Quran</span>
+            <span>Hadith</span>
+            <span>Dhikr</span>
+        </div>
+        <a href="#" class="btn-primary" style="padding: 8px 20px; font-size:12px;">Join Community</a>
+    </nav>
 
-<section>
-    <h2>آية اليوم</h2>
-    <div class="card" style="text-align:center;">
-        <p id="verseText" style="font-size:1.4rem; font-weight:bold;">جاري التحميل...</p>
-        <p id="verseRef" style="color:var(--gold); margin-bottom:15px;"></p>
-        <button class="play-btn" id="versePlay"><span class="audio-icon">🔊</span> استماع للآية</button>
+    <div class="hero">
+        <span>✨ Daily Spiritual Nourishment</span>
+        <h1>Illuminate Your Heart<br>with <em>Remembrance</em></h1>
+        <p>A sanctuary for the modern Muslim. Connect with the words of Allah and His Messenger ﷺ every single day.</p>
+        <div class="btn-group">
+            <a href="#" class="btn-primary">Start Reading</a>
+            <a href="#" class="btn-secondary" onclick="fetchDailyAyah()">Daily Dhikr</a>
+        </div>
     </div>
-</section>
 
-<section>
-    <h2>حديث شريف</h2>
-    <div class="card" id="hadithCard">
-        <p id="hadithText" style="font-size:1.1rem;">جاري جلب الحديث...</p>
-        <p id="hadithRef" style="color:var(--gold); font-size:0.9rem;"></p>
-        <button class="play-btn" id="hadithPlay"><span class="audio-icon">🔊</span> استماع للحديث</button>
+    <div class="prayer-times-bar" id="prayerBar">
+        جاري تحميل مواقيت الصلاة...
     </div>
-</section>
 
-<section>
-    <h2>أذكار المسلم</h2>
-    <div class="card" style="text-align:center;">
-        <p id="dhikrText" style="font-size:1.3rem; min-height: 60px; display: flex; align-items: center; justify-content: center;">سبحان الله</p>
-        <button class="play-btn" id="dhikrPlay" style="background: #2ecc71; color: white;">▶️ قراءة الذكر</button>
-        <button class="play-btn" id="nextDhikr">الذكر التالي 🔁</button>
+    <div class="section-label">📖 Verse of the Day</div>
+    <div class="verse-card">
+        <div class="verse-arabic" id="verseText">فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ</div>
+        <div class="verse-translation">"So remember Me; I will remember you. And be grateful to Me and do not deny Me."</div>
+        <div class="verse-ref" id="verseRef">Surah Al-Baqarah • Ayah 152</div>
+        <button onclick="playVerse()" style="background:none; border:none; color:var(--accent-gold); cursor:pointer; margin-top:20px; font-size:24px;">▶️</button>
     </div>
-</section>
 
-<section>
-    <h2>المصحف الشريف</h2>
-    <div class="card" style="padding:5px;">
-        <iframe class="quran-frame" src="https://quran.com/1?translations=131"></iframe>
+    <div class="section-label">📿 Daily Dhikr</div>
+    <div class="dhikr-grid">
+        <div class="dhikr-item" onclick="count(this)">
+            <h3>سُبْحَانَ اللهِ</h3>
+            <div class="dhikr-sub">SubhanAllah</div>
+            <div class="dhikr-trans">Glory be to Allah</div>
+        </div>
+        <div class="dhikr-item" onclick="count(this)">
+            <h3>الْحَمْدُ لِلَّهِ</h3>
+            <div class="dhikr-sub">Alhamdulillah</div>
+            <div class="dhikr-trans">All praise is due to Allah</div>
+        </div>
+        <div class="dhikr-item" onclick="count(this)">
+            <h3>اللهُ أَكْبَرُ</h3>
+            <div class="dhikr-sub">Allahu Akbar</div>
+            <div class="dhikr-trans">Allah is the Greatest</div>
+        </div>
+        <div class="dhikr-item" onclick="count(this)">
+            <h3>لَا إِلٰهَ إِلَّا اللهُ</h3>
+            <div class="dhikr-sub">La ilaha illallah</div>
+            <div class="dhikr-trans">There is no god but Allah</div>
+        </div>
     </div>
-</section>
 
-<section>
-    <h2>مواقيت الصلاة</h2>
-    <div class="card">
-        <div id="times">جاري تحديد الموقع...</div>
+    <div class="subscribe-box">
+        <div style="font-size:30px; margin-bottom:10px;">📧</div>
+        <h2>Never Miss a Reminder</h2>
+        <p>Join 15,000+ Muslims receiving daily Quran verses and Hadiths directly in their inbox.</p>
+        <div style="margin-top:30px;">
+            <input type="email" placeholder="your@email.com">
+            <button class="btn-primary" style="border:none; cursor:pointer;">Subscribe Now</button>
+        </div>
     </div>
-</section>
 
-<script>
-let verseAudio = new Audio();
-let synth = window.speechSynthesis;
+    <footer>
+        <div style="display:flex; justify-content:space-between;">
+            <div>
+                <div class="logo" style="margin-bottom:10px;">🌙 NUR</div>
+                <p style="width:300px;">Spreading the light of Islam through beautiful design and daily reminders.</p>
+            </div>
+            <div style="display:flex; gap:50px;">
+                <div>
+                    <h4 style="color:white">Resources</h4>
+                    <p>Quran Library</p>
+                    <p>Prayer Times</p>
+                </div>
+                <div>
+                    <h4 style="color:white">Support</h4>
+                    <p>About Us</p>
+                    <p>Contact</p>
+                </div>
+            </div>
+        </div>
+        <center style="margin-top:50px;">© 2026 NUR. All rights reserved.</center>
+    </footer>
 
-// 1. وظيفة القراءة الصوتية (للحديث والذكر)
-function speak(text) {
-    if (synth.speaking) synth.cancel();
-    let utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ar-SA';
-    utterance.rate = 0.9;
-    synth.speak(utterance);
-}
+    <script>
+        let audio = new Audio();
 
-// 2. جلب الآية العشوائية مع الصوت (API) كما طلبت
-async function fetchDailyAyah() {
-    try {
-        const response = await fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy');
-        const data = await response.json();
-        if (data.data) {
-            document.getElementById('verseText').textContent = data.data.text;
-            document.getElementById('verseRef').textContent = `[سورة ${data.data.surah.name} - آية ${data.data.numberInSurah}]`;
-            // استخدام رابط الصوت المباشر من الـ API أو نص فارغ
-            verseAudio.src = data.data.audio || '';
+        // جلب الآية برمجياً
+        async function fetchDailyAyah() {
+            const res = await fetch('https://api.alquran.cloud/v1/ayah/2:152/ar.alafasy');
+            const data = await res.json();
+            document.getElementById('verseText').innerText = data.data.text;
+            audio.src = data.data.audio;
         }
-    } catch (e) { 
-        document.getElementById('verseText').textContent = "يرجى التحقق من الاتصال بالإنترنت"; 
-    }
-}
-document.getElementById('versePlay').onclick = () => {
-    if(verseAudio.src) verseAudio.play();
-};
 
-// 3. الأحاديث مع صوت القراءة
-const hadiths = [
-    {t: "قال رسول الله ﷺ: مَنْ صَلَّى عَلَيَّ صَلَاةً وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا.", r: "رواه مسلم"},
-    {t: "قال رسول الله ﷺ: كلمتان خفيفتان على اللسان، ثقيلتان في الميزان: سبحان الله وبحمده، سبحان الله العظيم.", r: "متفق عليه"},
-    {t: "قال رسول الله ﷺ: لا يدخل الجنة من كان في قلبه مثقال ذرة من كبر.", r: "رواه مسلم"}
-];
-let currentHadith = hadiths[new Date().getDate() % hadiths.length];
-document.getElementById('hadithText').textContent = currentHadith.t;
-document.getElementById('hadithRef').textContent = currentHadith.r;
-document.getElementById('hadithPlay').onclick = () => speak(currentHadith.t);
+        function playVerse() {
+            if(audio.src) audio.play();
+            else fetchDailyAyah().then(() => audio.play());
+        }
 
-// 4. الأذكار مع صوت القراءة
-const dhikrs = [
-    "سبحان الله وبحمده، سبحان الله العظيم",
-    "اللهم صلِ وسلم على نبينا محمد",
-    "لا إله إلا الله وحده لا شريك له",
-    "أستغفر الله العظيم وأتوب إليه",
-    "لا حول ولا قوة إلا بالله العلي العظيم"
-];
-let dIndex = 0;
-function updateDhikr() {
-    document.getElementById('dhikrText').textContent = dhikrs[dIndex];
-}
-document.getElementById('nextDhikr').onclick = () => {
-    dIndex = (dIndex + 1) % dhikrs.length;
-    updateDhikr();
-};
-document.getElementById('dhikrPlay').onclick = () => speak(document.getElementById('dhikrText').textContent);
+        // جلب المواقيت بناءً على الموقع
+        navigator.geolocation.getCurrentPosition(pos => {
+            fetch(`https://api.aladhan.com/v1/timings?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&method=3`)
+            .then(r => r.json())
+            .then(d => {
+                const t = d.data.timings;
+                document.getElementById('prayerBar').innerHTML = `
+                    <div class="time-item">الفجر: <span>${t.Fajr}</span></div>
+                    <div class="time-item">الظهر: <span>${t.Dhuhr}</span></div>
+                    <div class="time-item">العصر: <span>${t.Asr}</span></div>
+                    <div class="time-item">المغرب: <span>${t.Maghrib}</span></div>
+                    <div class="time-item">العشاء: <span>${t.Isha}</span></div>
+                `;
+            });
+        });
 
-// 5. مواقيت الصلاة (Method 3 للجزائر والمغرب العربي)
-function getPrayers(lat, lon) {
-    fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`)
-    .then(res => res.json())
-    .then(data => {
-        const t = data.data.timings;
-        const keys = {Fajr:'الفجر', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء'};
-        let html = "";
-        for(let k in keys) html += `<div class="time-box"><strong>${keys[k]}</strong><br>${t[k]}</div>`;
-        document.getElementById('times').innerHTML = html;
-    });
-}
-
-window.onload = () => {
-    fetchDailyAyah();
-    updateDhikr();
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(p => getPrayers(p.coords.latitude, p.coords.longitude));
-    }
-};
-</script>
-
+        function count(el) {
+            el.style.transform = "scale(0.95)";
+            setTimeout(() => el.style.transform = "scale(1)", 100);
+        }
+    </script>
 </body>
-</html>
+            </html>
