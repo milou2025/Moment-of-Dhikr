@@ -73,28 +73,32 @@ let synth = window.speechSynthesis;
 // 1. وظيفة القراءة الصوتية (للحديث والذكر)
 function speak(text) {
     if (synth.speaking) synth.cancel();
-    let utter = new Uint8Array(); 
     let utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ar-SA';
     utterance.rate = 0.9;
     synth.speak(utterance);
 }
 
-// 2. جلب الآية (API)
+// 2. جلب الآية العشوائية مع الصوت (API) كما طلبت
 async function fetchDailyAyah() {
     try {
-        const res = await fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy');
-        const data = await res.json();
+        const response = await fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy');
+        const data = await response.json();
         if (data.data) {
             document.getElementById('verseText').textContent = data.data.text;
             document.getElementById('verseRef').textContent = `[سورة ${data.data.surah.name} - آية ${data.data.numberInSurah}]`;
+            // استخدام رابط الصوت المباشر من الـ API أو نص فارغ
             verseAudio.src = data.data.audio || '';
         }
-    } catch (e) { document.getElementById('verseText').textContent = "تأكد من الإنترنت"; }
+    } catch (e) { 
+        document.getElementById('verseText').textContent = "يرجى التحقق من الاتصال بالإنترنت"; 
+    }
 }
-document.getElementById('versePlay').onclick = () => verseAudio.play();
+document.getElementById('versePlay').onclick = () => {
+    if(verseAudio.src) verseAudio.play();
+};
 
-// 3. الأحاديث
+// 3. الأحاديث مع صوت القراءة
 const hadiths = [
     {t: "قال رسول الله ﷺ: مَنْ صَلَّى عَلَيَّ صَلَاةً وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا.", r: "رواه مسلم"},
     {t: "قال رسول الله ﷺ: كلمتان خفيفتان على اللسان، ثقيلتان في الميزان: سبحان الله وبحمده، سبحان الله العظيم.", r: "متفق عليه"},
@@ -105,7 +109,7 @@ document.getElementById('hadithText').textContent = currentHadith.t;
 document.getElementById('hadithRef').textContent = currentHadith.r;
 document.getElementById('hadithPlay').onclick = () => speak(currentHadith.t);
 
-// 4. الأذكار
+// 4. الأذكار مع صوت القراءة
 const dhikrs = [
     "سبحان الله وبحمده، سبحان الله العظيم",
     "اللهم صلِ وسلم على نبينا محمد",
@@ -123,7 +127,7 @@ document.getElementById('nextDhikr').onclick = () => {
 };
 document.getElementById('dhikrPlay').onclick = () => speak(document.getElementById('dhikrText').textContent);
 
-// 5. مواقيت الصلاة
+// 5. مواقيت الصلاة (Method 3 للجزائر والمغرب العربي)
 function getPrayers(lat, lon) {
     fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`)
     .then(res => res.json())
