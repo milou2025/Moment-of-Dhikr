@@ -1,74 +1,149 @@
-<!doctype html>
-<html lang="ar">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Moment of Dhikr</title>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ذكر وقرآن - النسخة الصوتية الكاملة</title>
     <style>
-      /* تنسيق هيدر أوقات الصلاة */
-      #p-header {
-        display: none; justify-content: space-around; background: #111;
-        padding: 10px; border-bottom: 2px solid #ffcc00; color: #fff;
-        font-family: sans-serif; font-size: 0.8rem; direction: rtl;
-        position: sticky; top: 0; z-index: 9999;
-      }
-      .p-time { color: #ffcc00; font-weight: bold; margin-right: 5px; }
+        :root { --gold: #ffd700; --bg: #1a1a1a; --card: #2a2a2a; }
+        body { margin:0; font-family:'Segoe UI', Tahoma, sans-serif; background:var(--bg); color:#f5f5f5; line-height:1.6; padding-bottom:50px;}
+        h1, h2 { text-align:center; color:var(--gold); margin:20px 0; }
+        section { padding:15px; max-width:800px; margin:auto; }
+        .card { background:var(--card); border-radius:15px; padding:20px; margin-bottom:15px; border:1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
+        .play-btn { background:var(--gold); color:#1a1a1a; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:bold; transition:0.3s; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .play-btn:hover { background:#e6c200; transform: translateY(-2px); }
+        #times { display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:10px; text-align:center; }
+        .time-box { background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; border:1px solid var(--gold); }
+        .quran-frame { width:100%; height:550px; border:none; border-radius:12px; background: white; }
+        .audio-icon { font-size: 1.2rem; }
     </style>
-  </head>
-  <body>
-    <div id="p-header"></div>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+</head>
+<body>
 
-    <script>
-      // 1. جلب أوقات الصلاة حسب الموقع
-      navigator.geolocation.getCurrentPosition(pos => {
-        fetch(`https://api.aladhan.com/v1/timings?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&method=3`)
-          .then(res => res.json()).then(d => {
-            const t = d.data.timings;
-            const header = document.getElementById('p-header');
-            header.style.display = 'flex';
-            header.innerHTML = `
-              <div>الفجر<span class="p-time">${t.Fajr}</span></div>
-              <div>الظهر<span class="p-time">${t.Dhuhr}</span></div>
-              <div>العصر<span class="p-time">${t.Asr}</span></div>
-              <div>المغرب<span class="p-time">${t.Maghrib}</span></div>
-              <div>العشاء<span class="p-time">${t.Isha}</span></div>
-            `;
-          });
-      });
+<header style="text-align:center; padding:40px 10px;">
+    <h1>ذكر يومي وقرآن</h1>
+    <p style="opacity: 0.8;">استمع للذكر والقرآن يومياً</p>
+</header>
 
-      // 2. تحديث الآية والصوت (بدون تخلاط)
-      async function updateVerseSafe() {
+<section>
+    <h2>آية اليوم</h2>
+    <div class="card" style="text-align:center;">
+        <p id="verseText" style="font-size:1.4rem; font-weight:bold;">جاري التحميل...</p>
+        <p id="verseRef" style="color:var(--gold); margin-bottom:15px;"></p>
+        <button class="play-btn" id="versePlay"><span class="audio-icon">🔊</span> استماع للآية</button>
+    </div>
+</section>
+
+<section>
+    <h2>حديث شريف</h2>
+    <div class="card" id="hadithCard">
+        <p id="hadithText" style="font-size:1.1rem;">جاري جلب الحديث...</p>
+        <p id="hadithRef" style="color:var(--gold); font-size:0.9rem;"></p>
+        <button class="play-btn" id="hadithPlay"><span class="audio-icon">🔊</span> استماع للحديث</button>
+    </div>
+</section>
+
+<section>
+    <h2>أذكار المسلم</h2>
+    <div class="card" style="text-align:center;">
+        <p id="dhikrText" style="font-size:1.3rem; min-height: 60px; display: flex; align-items: center; justify-content: center;">سبحان الله</p>
+        <button class="play-btn" id="dhikrPlay" style="background: #2ecc71; color: white;">▶️ قراءة الذكر</button>
+        <button class="play-btn" id="nextDhikr">الذكر التالي 🔁</button>
+    </div>
+</section>
+
+<section>
+    <h2>المصحف الشريف</h2>
+    <div class="card" style="padding:5px;">
+        <iframe class="quran-frame" src="https://quran.com/1?translations=131"></iframe>
+    </div>
+</section>
+
+<section>
+    <h2>مواقيت الصلاة</h2>
+    <div class="card">
+        <div id="times">جاري تحديد الموقع...</div>
+    </div>
+</section>
+
+<script>
+let verseAudio = new Audio();
+let synth = window.speechSynthesis;
+
+// 1. وظيفة القراءة الصوتية (للحديث والذكر)
+function speak(text) {
+    if (synth.speaking) synth.cancel();
+    let utter = new Uint8Array(); 
+    let utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ar-SA';
+    utterance.rate = 0.9;
+    synth.speak(utterance);
+}
+
+// 2. جلب الآية (API)
+async function fetchDailyAyah() {
+    try {
         const res = await fetch('https://api.alquran.cloud/v1/ayah/random/ar.alafasy');
         const data = await res.json();
-        const ayah = data.data.text;
-        const audio = new Audio(data.data.audio);
+        if (data.data) {
+            document.getElementById('verseText').textContent = data.data.text;
+            document.getElementById('verseRef').textContent = `[سورة ${data.data.surah.name} - آية ${data.data.numberInSurah}]`;
+            verseAudio.src = data.data.audio || '';
+        }
+    } catch (e) { document.getElementById('verseText').textContent = "تأكد من الإنترنت"; }
+}
+document.getElementById('versePlay').onclick = () => verseAudio.play();
 
-        const checkInterval = setInterval(() => {
-          // هنا السكريبت يحوس *فقط* على النص الطويل اللي فيه كلمة "فَاذْكُرُونِي"
-          const elements = document.querySelectorAll('p');
-          elements.forEach(el => {
-            if (el.innerText.includes("فَاذْكُرُونِي")) {
-              el.innerText = ayah; 
-              el.style.color = "#fff"; // نضمن اللون أبيض
-              clearInterval(checkInterval); // غير يلقاها ويحبس ما يقيس والو آخر
-            }
-          });
+// 3. الأحاديث
+const hadiths = [
+    {t: "قال رسول الله ﷺ: مَنْ صَلَّى عَلَيَّ صَلَاةً وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا.", r: "رواه مسلم"},
+    {t: "قال رسول الله ﷺ: كلمتان خفيفتان على اللسان، ثقيلتان في الميزان: سبحان الله وبحمده، سبحان الله العظيم.", r: "متفق عليه"},
+    {t: "قال رسول الله ﷺ: لا يدخل الجنة من كان في قلبه مثقال ذرة من كبر.", r: "رواه مسلم"}
+];
+let currentHadith = hadiths[new Date().getDate() % hadiths.length];
+document.getElementById('hadithText').textContent = currentHadith.t;
+document.getElementById('hadithRef').textContent = currentHadith.r;
+document.getElementById('hadithPlay').onclick = () => speak(currentHadith.t);
 
-          // ربط الزر الأصفر بالصوت
-          const playBtn = document.querySelector('button'); 
-          if (playBtn && !playBtn.dataset.linked) {
-            playBtn.onclick = (e) => {
-              e.preventDefault();
-              if(audio.paused) audio.play(); else audio.pause();
-            };
-            playBtn.dataset.linked = "true";
-          }
-        }, 1000);
-      }
+// 4. الأذكار
+const dhikrs = [
+    "سبحان الله وبحمده، سبحان الله العظيم",
+    "اللهم صلِ وسلم على نبينا محمد",
+    "لا إله إلا الله وحده لا شريك له",
+    "أستغفر الله العظيم وأتوب إليه",
+    "لا حول ولا قوة إلا بالله العلي العظيم"
+];
+let dIndex = 0;
+function updateDhikr() {
+    document.getElementById('dhikrText').textContent = dhikrs[dIndex];
+}
+document.getElementById('nextDhikr').onclick = () => {
+    dIndex = (dIndex + 1) % dhikrs.length;
+    updateDhikr();
+};
+document.getElementById('dhikrPlay').onclick = () => speak(document.getElementById('dhikrText').textContent);
 
-      updateVerseSafe();
-    </script>
-  </body>
+// 5. مواقيت الصلاة
+function getPrayers(lat, lon) {
+    fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`)
+    .then(res => res.json())
+    .then(data => {
+        const t = data.data.timings;
+        const keys = {Fajr:'الفجر', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء'};
+        let html = "";
+        for(let k in keys) html += `<div class="time-box"><strong>${keys[k]}</strong><br>${t[k]}</div>`;
+        document.getElementById('times').innerHTML = html;
+    });
+}
+
+window.onload = () => {
+    fetchDailyAyah();
+    updateDhikr();
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(p => getPrayers(p.coords.latitude, p.coords.longitude));
+    }
+};
+</script>
+
+</body>
 </html>
