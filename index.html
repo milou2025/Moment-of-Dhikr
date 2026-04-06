@@ -1,150 +1,210 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نور | NUR</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نور | NUR</title>
 
-        :root {
-            --bg: #050505;
-            --gold: #c5a059;
-            --card: #0c0c0c;
-            --border: #1a1a1a;
-            --white: #ffffff;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-        body {
-            background-color: var(--bg);
-            color: var(--white);
-            font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0;
-            user-select: none;
-        }
+<style>
+:root {
+  --bg:#050505;
+  --gold:#c5a059;
+  --card:#0c0c0c;
+  --border:#1a1a1a;
+  --white:#ffffff;
+}
 
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 5%; border-bottom: 1px solid var(--border);
-        }
-        .logo { font-family: 'Amiri', serif; font-size: 26px; color: var(--gold); font-weight: bold; }
+body {
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--white);
+}
 
-        /* مواقيت الصلاة */
-        .prayer-section { padding: 20px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
-        .p-card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 12px; text-align: center; }
-        .p-name { color: #888; font-size: 12px; display: block; }
-        .p-time { color: var(--gold); font-size: 18px; font-weight: bold; }
+header {
+  text-align:center;
+  padding:25px;
+  border-bottom:1px solid var(--border);
+}
 
-        /* الأذكار والعداد */
-        .section-title { color: var(--gold); margin: 40px 5% 20px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .dhikr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 0 5%; }
-        .dhikr-card {
-            background: var(--card); border: 1px solid var(--border);
-            padding: 40px 20px; border-radius: 24px; text-align: center;
-            position: relative; cursor: pointer; transition: 0.2s;
-        }
-        .dhikr-card:active { transform: scale(0.96); border-color: var(--gold); }
-        .counter-num { font-size: 3.5rem; font-weight: bold; color: var(--gold); display: block; margin-bottom: 5px; }
-        .dhikr-name { font-family: 'Amiri', serif; font-size: 1.8rem; margin-bottom: 15px; }
-        
-        .btn-reset { background: none; border: 1px solid #333; color: #666; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px; }
-        .btn-reset:hover { color: var(--gold); border-color: var(--gold); }
+h1 {
+  color:var(--gold);
+}
 
-        /* المصحف */
-        .quran-box { margin: 20px 5%; height: 650px; background: white; border-radius: 20px; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; }
+.container {
+  max-width:600px;
+  margin:auto;
+  padding:15px;
+}
 
-        /* الاشتراك */
-        .sub-box { background: var(--card); margin: 40px 5%; padding: 50px; border-radius: 24px; text-align: center; border: 1px solid var(--border); }
-        input[type="email"] { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: white; width: 100%; max-width: 350px; margin-bottom: 15px; }
-        .btn-sub { background: var(--gold); color: black; border: none; padding: 15px 40px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.card {
+  background:var(--card);
+  padding:20px;
+  margin:15px 0;
+  border-radius:15px;
+  border:1px solid var(--border);
+  transition:0.3s;
+}
 
-        footer { padding: 40px; text-align: center; color: #555; font-size: 12px; border-top: 1px solid var(--border); }
-    </style>
+.card:hover {
+  transform:translateY(-5px);
+}
+
+button {
+  background:var(--gold);
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+  width:100%;
+}
+
+input {
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  width:100%;
+  margin-bottom:10px;
+}
+
+audio {
+  width:100%;
+  margin-top:10px;
+}
+
+footer {
+  text-align:center;
+  padding:20px;
+  color:#777;
+}
+</style>
+
+<!-- AdSense (بدل XXXX لاحقا) -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXX"
+crossorigin="anonymous"></script>
+
 </head>
+
 <body>
 
-    <nav>
-        <div class="logo">🌙 NUR</div>
-        <div style="font-size: 12px; color: #666;">القرآن الكريم • الأذكار • مواقيت الصلاة</div>
-    </nav>
+<header>
+  <h1>🌙 نور</h1>
+  <p>رفيقك اليومي لذكر الله</p>
+</header>
 
-    <div class="prayer-section" id="p-times">
-        <div class="p-card">جاري التحميل...</div>
-    </div>
+<div class="container">
 
-    <div class="section-title">📿 المسبحة والعداد التراكمي</div>
-    <div class="dhikr-grid">
-        <div class="dhikr-card" onclick="inc('c1')">
-            <span class="counter-num" id="c1">0</span>
-            <div class="dhikr-name">سُبْحَانَ اللهِ</div>
-            <button class="btn-reset" onclick="res('c1', event)">إعادة ضبط ↺</button>
-        </div>
-        <div class="dhikr-card" onclick="inc('c2')">
-            <span class="counter-num" id="c2">0</span>
-            <div class="dhikr-name">الْحَمْدُ لِلَّهِ</div>
-            <button class="btn-reset" onclick="res('c2', event)">إعادة ضبط ↺</button>
-        </div>
-        <div class="dhikr-card" onclick="inc('c3')">
-            <span class="counter-num" id="c3">0</span>
-            <div class="dhikr-name">اللهُ أَكْبَرُ</div>
-            <button class="btn-reset" onclick="res('c3', event)">إعادة ضبط ↺</button>
-        </div>
-    </div>
+<!-- آية -->
+<div class="card">
+  <h2>📖 آية اليوم</h2>
+  <p id="ayah">جاري التحميل...</p>
+  <audio id="audio" controls></audio>
+</div>
 
-    <div class="section-title">🕋 المصحف الإلكتروني</div>
-    <div class="quran-box">
-        <iframe src="https://quran.com/1?translations=131"></iframe>
-    </div>
+<!-- حديث -->
+<div class="card">
+  <h2>🕌 حديث</h2>
+  <p id="hadith"></p>
+</div>
 
-    <div class="sub-box">
-        <h2>تذكير بريدي يومي</h2>
-        <p style="color: #888; margin-bottom: 20px;">احصل على آية اليوم وحديث شريف في بريدك</p>
-        <input type="email" id="em" placeholder="أدخل بريدك الإلكتروني">
-        <br>
-        <button class="btn-sub" onclick="sub()">اشترك الآن</button>
-        <p id="msg" style="margin-top: 15px;"></p>
-    </div>
+<!-- ذكر -->
+<div class="card">
+  <h2>🤲 ذكر</h2>
+  <p id="dhikr"></p>
+  <button onclick="changeDhikr()">تغيير الذكر</button>
+</div>
 
-    <footer>
-        <p>© 2026 نور | تم استعادة جميع الميزات المحذوفة</p>
-    </footer>
+<!-- إعلان -->
+<div class="card">
+  <h3>📢 إعلان</h3>
 
-    <script>
-        // نظام العداد
-        function inc(id) {
-            let el = document.getElementById(id);
-            el.innerText = parseInt(el.innerText) + 1;
-            if (navigator.vibrate) navigator.vibrate(50);
-        }
-        function res(id, e) {
-            e.stopPropagation();
-            document.getElementById(id).innerText = 0;
-        }
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXX"
+       data-ad-slot="1234567890"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
 
-        // مواقيت الصلاة
-        navigator.geolocation.getCurrentPosition(p => {
-            fetch(`https://api.aladhan.com/v1/timings?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&method=3`)
-            .then(r => r.json()).then(data => {
-                const t = data.data.timings;
-                const names = {Fajr:'الفجر', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء'};
-                let html = "";
-                for(let k in names) html += `<div class="p-card"><span class="p-name">${names[k]}</span><span class="p-time">${t[k]}</span></div>`;
-                document.getElementById('p-times').innerHTML = html;
-            });
-        });
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
 
-        // نظام الاشتراك
-        function sub() {
-            let e = document.getElementById('em').value;
-            let m = document.getElementById('msg');
-            if(e.includes("@")) {
-                m.innerText = "تم الاشتراك بنجاح!"; m.style.color = var(--gold);
-            } else {
-                m.innerText = "خطأ في البريد"; m.style.color = "red";
-            }
-        }
-    </script>
+<!-- اشتراك -->
+<div class="card">
+  <h2>📩 اشترك</h2>
+  <input type="email" id="email" placeholder="ادخل ايميلك">
+  <button onclick="subscribe()">اشترك</button>
+  <p id="msg"></p>
+</div>
+
+</div>
+
+<footer>
+© 2026 NUR
+</footer>
+
+<script>
+// تحميل آية
+async function loadAyah(){
+  try{
+    const res = await fetch("https://api.alquran.cloud/v1/ayah/random/ar.alafasy");
+    const data = await res.json();
+    document.getElementById("ayah").innerText = data.data.text;
+    document.getElementById("audio").src = data.data.audio;
+  }catch{
+    document.getElementById("ayah").innerText = "تعذر تحميل الآية";
+  }
+}
+
+// حديث
+const hadiths = [
+"إنما الأعمال بالنيات",
+"خيركم من تعلم القرآن وعلمه",
+"الدين النصيحة",
+"من سلك طريقا يلتمس فيه علما سهل الله له به طريقا إلى الجنة"
+];
+
+document.getElementById("hadith").innerText =
+hadiths[Math.floor(Math.random()*hadiths.length)];
+
+// أذكار
+const adhkar = [
+"سبحان الله",
+"الحمد لله",
+"الله أكبر",
+"لا إله إلا الله",
+"أستغفر الله",
+"اللهم صل وسلم على نبينا محمد"
+];
+
+function changeDhikr(){
+  document.getElementById("dhikr").innerText =
+  adhkar[Math.floor(Math.random()*adhkar.length)];
+}
+
+// اشتراك
+function subscribe(){
+  const email = document.getElementById("email").value;
+  const msg = document.getElementById("msg");
+
+  if(!email.includes("@")){
+    msg.innerText="❌ ايميل غير صحيح";
+    msg.style.color="red";
+    return;
+  }
+
+  localStorage.setItem("email",email);
+  msg.innerText="✅ تم الاشتراك";
+  msg.style.color="green";
+}
+
+// تشغيل
+loadAyah();
+changeDhikr();
+</script>
+
 </body>
 </html>
